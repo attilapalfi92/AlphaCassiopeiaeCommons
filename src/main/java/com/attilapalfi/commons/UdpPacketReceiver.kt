@@ -7,4 +7,5 @@ interface UdpPacketReceiver {
     fun started(): Boolean
     fun startReceiving()
     fun stopReceiving()
+    //fun setUdpPacketProcessor(packetProcessor: UdpPacketProcessor)
 }
