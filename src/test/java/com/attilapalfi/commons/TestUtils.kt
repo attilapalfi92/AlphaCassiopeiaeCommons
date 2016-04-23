@@ -1,6 +1,9 @@
 package com.attilapalfi.commons
 
-import com.attilapalfi.commons.messages.*
+import com.attilapalfi.commons.messages.ClientTcpMessage
+import com.attilapalfi.commons.messages.ClientTcpMessageType.DISCONNECTION
+import com.attilapalfi.commons.messages.ClientTcpMessageType.REGISTRATION
+import com.attilapalfi.commons.messages.PressedButton.*
 import com.attilapalfi.commons.utlis.ClientMessageConverter
 import java.io.OutputStream
 import java.net.InetAddress
@@ -10,6 +13,9 @@ import java.net.Socket
  * Created by palfi on 2016-02-14.
  */
 object TestUtils {
+
+    private val converter = ClientMessageConverter()
+
     fun startClientThread(serverAddress: InetAddress, serverPort: Int): Thread {
         return Thread({
             val clientSocket: Socket = Socket(serverAddress, serverPort)
@@ -23,23 +29,23 @@ object TestUtils {
     }
 
     fun writeTcpClientMessagesToStream(out: OutputStream) {
-        var clientMessage: TcpClientMessage = TcpClientMessage(SENSOR_DATA, "alma")
+        var clientMessage: ClientTcpMessage = ClientTcpMessage(REGISTRATION, A, "alma")
         writeToStream(clientMessage, out)
 
-        clientMessage = TcpClientMessage(REGISTRATION, "alma")
+        clientMessage = ClientTcpMessage(DISCONNECTION, B, "alma")
         writeToStream(clientMessage, out)
 
-        clientMessage = TcpClientMessage(START, "alma")
+        clientMessage = ClientTcpMessage(REGISTRATION, X, "alma")
         writeToStream(clientMessage, out)
 
-        clientMessage = TcpClientMessage(PAUSE, "alma")
+        clientMessage = ClientTcpMessage(DISCONNECTION, Y, "alma")
         writeToStream(clientMessage, out)
 
-        clientMessage = TcpClientMessage(RESUME, "alma")
+        clientMessage = ClientTcpMessage(REGISTRATION, A, "alma")
         writeToStream(clientMessage, out)
     }
 
-    private fun writeToStream(clientMessage: TcpClientMessage, it: OutputStream) {
-        it.write(ClientMessageConverter.tcpClientMessageToByteArray(clientMessage) + MESSAGE_END)
+    private fun writeToStream(clientMessage: ClientTcpMessage, it: OutputStream) {
+        it.write(converter.messageToByteArray(clientMessage) + MESSAGE_END)
     }
 }

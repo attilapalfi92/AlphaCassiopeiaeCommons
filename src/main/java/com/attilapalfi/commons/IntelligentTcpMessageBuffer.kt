@@ -1,6 +1,5 @@
 package com.attilapalfi.commons
 
-import com.attilapalfi.commons.messages.MESSAGE_END
 import com.attilapalfi.commons.utlis.byteArrayEquals
 
 /**

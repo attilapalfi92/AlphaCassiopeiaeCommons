@@ -6,8 +6,8 @@ import kotlin.jvm.javaClass
 /**
  * Created by palfi on 2016-01-14.
  */
-open class Endpoint(public val IP: InetAddress,
-                    public val port: Int) {
+open class Endpoint(val IP: InetAddress,
+                    val port: Int) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

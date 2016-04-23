@@ -1,4 +1,4 @@
-import com.attilapalfi.commons.BUFFER_SIZE
+import com.attilapalfi.commons.UDP_BUFFER_SIZE
 import com.attilapalfi.commons.IntelligentTcpMessageBuffer
 import com.attilapalfi.commons.TcpSignalProcessor
 import com.attilapalfi.commons.TestUtils
@@ -39,7 +39,7 @@ class TcpMessageBufferTest {
 
 
             while (true) {
-                val array = ByteArray(BUFFER_SIZE)
+                val array = ByteArray(UDP_BUFFER_SIZE)
                 var readBytes: Int = 0
                 connection.inputStream.use {
                     while (readBytes != -1) {

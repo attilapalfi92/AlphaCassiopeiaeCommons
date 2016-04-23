@@ -1,21 +1,25 @@
 package com.attilapalfi.commons.messages
 
 import java.io.Serializable
+import java.util.*
 
 /**
  * Created by palfi on 2016-01-15.
  */
-class UdpSensorData(public val type: Byte,
-                    public val x: Float = 0f,
-                    public val y: Float = 0f) : Serializable
+data class UdpSensorData(val pressedButtons: Set<PressedButton> = HashSet(),
+                         val x: Float = 0f,
+                         val y: Float = 0f) : Serializable
 
-class TcpClientMessage(public val messageType: Byte = 0,
-                       public val deviceName: String? = null) : Serializable
+enum class PressedButton {
+    A, B, X, Y, None
+}
 
-val SENSOR_DATA: Byte   = 0b0
-val REGISTRATION: Byte  = 0b10
-val START: Byte         = 0b110
-val SHOOT: Byte         = 0b1110
-val SHITBOMB: Byte      = 0b11110
-val PAUSE: Byte         = 0b111110
-val RESUME: Byte        = 0b1111110
+data class ClientTcpMessage(val messageType: ClientTcpMessageType = ClientTcpMessageType.REGISTRATION,
+                            val pressedButton: PressedButton = PressedButton.None,
+                            val deviceName: String? = null) : Serializable
+
+enum class ClientTcpMessageType {
+    REGISTRATION,
+    BUTTON_PRESS,
+    DISCONNECTION
+}

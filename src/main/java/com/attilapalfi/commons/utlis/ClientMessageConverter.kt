@@ -1,23 +1,45 @@
 package com.attilapalfi.commons.utlis
 
-import com.attilapalfi.commons.messages.TcpClientMessage
+import com.attilapalfi.commons.UDP_BUFFER_SIZE
+import com.attilapalfi.commons.messages.ClientTcpMessage
 import com.attilapalfi.commons.messages.UdpSensorData
-import org.apache.commons.lang3.SerializationUtils
+import com.esotericsoftware.kryo.Kryo
+import com.esotericsoftware.kryo.io.Input
+import com.esotericsoftware.kryo.io.Output
 
 /**
  * Created by palfi on 2016-02-13.
  */
-object ClientMessageConverter {
+class ClientMessageConverter {
 
-    fun udpSensorDataToByteArray(message: UdpSensorData): ByteArray
-            = SerializationUtils.serialize(message)
+    private val kryo = Kryo()
 
-    fun byteArrayToUdpSensorData(payload: ByteArray): UdpSensorData
-            = SerializationUtils.deserialize(payload)
+    fun messageToByteArray(message: ClientTcpMessage): ByteArray
+            = convertToByteArray(message)
 
-    fun tcpClientMessageToByteArray(message: TcpClientMessage): ByteArray
-            = SerializationUtils.serialize(message)
+    fun messageToByteArray(message: UdpSensorData): ByteArray
+            = convertToByteArray(message)
 
-    fun byteArrayToTcpClientMessage(payload: ByteArray): TcpClientMessage
-            = SerializationUtils.deserialize(payload)
+    private fun convertToByteArray(message: Any): ByteArray {
+        val buffer = ByteArray(UDP_BUFFER_SIZE)
+        val output = Output(buffer)
+        output.use {
+            kryo.writeObject(output, message)
+        }
+        return buffer.copyOf(output.position())
+    }
+
+    fun byteArrayToTcpMessage(byteArray: ByteArray): ClientTcpMessage {
+        val input = Input(byteArray)
+        input.use {
+            return kryo.readObject(input, ClientTcpMessage::class.java)
+        }
+    }
+
+    fun byteArrayToUdpSensorData(byteArray: ByteArray): UdpSensorData {
+        val input = Input(byteArray)
+        input.use {
+            return kryo.readObject(input, UdpSensorData::class.java)
+        }
+    }
 }
