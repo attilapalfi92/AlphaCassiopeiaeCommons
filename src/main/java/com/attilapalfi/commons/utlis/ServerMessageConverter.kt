@@ -1,14 +1,11 @@
 package com.attilapalfi.commons.utlis
 
 import com.attilapalfi.commons.UDP_BUFFER_SIZE
-import com.attilapalfi.commons.messages.ClientTcpMessage
 import com.attilapalfi.commons.messages.ServerTcpMessage
 import com.attilapalfi.commons.messages.UdpDiscoveryBroadcast
-import com.attilapalfi.commons.messages.UdpSensorData
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
-import org.apache.commons.lang3.SerializationUtils
 
 /**
  * Created by palfi on 2016-01-15.

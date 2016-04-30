@@ -1,14 +1,11 @@
 package com.attilapalfi.commons
 
-import com.attilapalfi.commons.messages.PressedButton
-import com.attilapalfi.commons.messages.PressedButton.None
 import com.attilapalfi.commons.messages.ClientTcpMessage
-import com.attilapalfi.commons.messages.ClientTcpMessageType
 import com.attilapalfi.commons.messages.ClientTcpMessageType.REGISTRATION
+import com.attilapalfi.commons.messages.PressedButton.None
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
-import org.apache.commons.lang3.SerializationUtils
 import org.junit.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -31,8 +28,8 @@ class SpeedTests {
         println("--- serialization: ---")
         measureJavaIoSerialization(iterationCount, messageCount, testList)
         println("Byte array size: ${messageToByteArrayWithJavaIO(testList[0]).size}\n")
-        measureApacheSerialization(iterationCount, messageCount, testList)
-        println("Byte array size: ${messageToByteArrayWithApache(testList[0]).size}\n")
+        //measureApacheSerialization(iterationCount, messageCount, testList)
+        //println("Byte array size: ${messageToByteArrayWithApache(testList[0]).size}\n")
         measureKryoSerialization(iterationCount, messageCount, testList)
         println("Byte array size: ${messageToByteArrayWithKryo(testList[0]).size}")
     }
@@ -42,10 +39,10 @@ class SpeedTests {
         val messageCount = 10000
         val iterationCount = 100
         val messages = createMessages(messageCount)
-        var byteArrayList: List<ByteArray> = messages.map { messageToByteArrayWithApache(it) }
+        var byteArrayList: List<ByteArray> = messages.map { messageToByteArrayWithJavaIO(it) }
         println("--- deserialization: ---")
         measureJavaIoDeserialization(byteArrayList, iterationCount, messageCount)
-        measureApacheCommonsDeserialization(byteArrayList, iterationCount, messageCount)
+        //measureApacheCommonsDeserialization(byteArrayList, iterationCount, messageCount)
         byteArrayList = messages.map { messageToByteArrayWithKryo(it) }
         measureKryoDeserialization(byteArrayList, iterationCount, messageCount)
     }
@@ -57,12 +54,14 @@ class SpeedTests {
                 { m -> messageToByteArrayWithJavaIO(m) })
     }
 
+    /*
     private fun measureApacheSerialization(iterationCount: Int, messageCount: Int,
                                            testList: List<ClientTcpMessage>) {
 
         measureSerialization(iterationCount, messageCount, testList, "apache commons",
                 { m -> messageToByteArrayWithApache(m) })
     }
+    */
 
     private fun measureKryoSerialization(iterationCount: Int, messageCount: Int,
                                          testList: List<ClientTcpMessage>) {
@@ -91,8 +90,8 @@ class SpeedTests {
         }
     }
 
-    private fun messageToByteArrayWithApache(message: ClientTcpMessage): ByteArray
-            = SerializationUtils.serialize(message)
+    //private fun messageToByteArrayWithApache(message: ClientTcpMessage): ByteArray
+    //        = SerializationUtils.serialize(message)
 
     private fun messageToByteArrayWithKryo(message: ClientTcpMessage): ByteArray {
         val buffer = ByteArray(300)
@@ -108,12 +107,14 @@ class SpeedTests {
                 { b -> byteArrayToMessageWithJavaIO(b) })
     }
 
+    /*
     private fun measureApacheCommonsDeserialization(byteArrayList: List<ByteArray>, iterationCount: Int,
                                                     messageCount: Int) {
 
         measureDeserialization(byteArrayList, iterationCount, messageCount, "apache commons",
                 { b -> byteArrayToMessageWithApache(b) })
     }
+    */
 
     private fun measureKryoDeserialization(byteArrayList: List<ByteArray>, iterationCount: Int,
                                            messageCount: Int) {
@@ -143,8 +144,8 @@ class SpeedTests {
         }
     }
 
-    private fun byteArrayToMessageWithApache(payload: ByteArray): ClientTcpMessage
-            = SerializationUtils.deserialize(payload)
+    //private fun byteArrayToMessageWithApache(payload: ByteArray): ClientTcpMessage
+    //        = SerializationUtils.deserialize(payload)
 
     private fun byteArrayToMessageWithKryo(payload: ByteArray): ClientTcpMessage
             = kryo.readObject(Input(payload), ClientTcpMessage::class.java)
